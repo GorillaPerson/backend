@@ -1,36 +1,22 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const cors = require('cors');
-const { createClient } = require('@supabase/supabase-js');
+const { createClient } = require("@supabase/supabase-js");
 
-// Load environment variables
-dotenv.config();
+// Debugging: Log environment variables
+console.log("SUPABASE_URL:", process.env.SUPABASE_URL);
+console.log("SUPABASE_KEY:", process.env.SUPABASE_KEY ? "Exists" : "Not Found");
 
-// Initialize Express
-const app = express();
-const port = process.env.PORT || 3000;  // Default to 3000 if no PORT is set
-app.use(cors());
-// Initialize Supabase client
+// Create Supabase client
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
-// Example route
-app.get('/', (req, res) => {
-  res.send('Hello from Minecraft Backend!');
-});
+module.exports = async (req, res) => {
+  try {
+    const { data, error } = await supabase.from("items").select("*");
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
 
-app.get('/items', async (req, res) => {
-  const { data, error } = await supabase
-    .from('items')
-    .select('*');
-
-  if (error) {
-    return res.status(500).send({ error: error.message });
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(500).json({ error: "Internal Server Error" });
   }
-  res.json(data);  // Sends the data as JSON
-});
-
+};
