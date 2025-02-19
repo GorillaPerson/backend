@@ -7,8 +7,8 @@ const app = express();
 app.use(cors());
 
 // Supabase Setup
-const supabaseUrl = process.SUPABASE_URL;
-const supabaseKey = process.SUPABASE_KEY;
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 app.get("/items", async (req, res) => {
