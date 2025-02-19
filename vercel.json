@@ -1,5 +1,11 @@
 {
   "version": 2,
-  "builds": [{ "src": "api/items.js", "use": "@vercel/node" }],
-  "routes": [{ "src": "/items", "dest": "api/items.js" }]
+  "functions": {
+    "api/items.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
+  "routes": [
+    { "src": "/items", "dest": "/api/items.js" }
+  ]
 }
